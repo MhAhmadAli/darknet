@@ -114,7 +114,7 @@ class JSON_sender
 public:
 
     JSON_sender(int port = 0, int _timeout = 400000)
-        : sock(INVALID_SOCKET)
+        : sock(M_INVALID_SOCKET)
         , timeout(_timeout)
     {
         close_all_sockets = 0;
@@ -131,9 +131,9 @@ public:
 
     bool release()
     {
-        if (sock != INVALID_SOCKET)
+        if (sock != M_INVALID_SOCKET)
             ::shutdown(sock, 2);
-        sock = (INVALID_SOCKET);
+        sock = (M_INVALID_SOCKET);
         return false;
     }
 
@@ -191,7 +191,7 @@ public:
 
     bool isOpened()
     {
-        return sock != INVALID_SOCKET;
+        return sock != M_INVALID_SOCKET;
     }
 
     bool write(char const* outputbuf)
@@ -246,7 +246,7 @@ public:
                     //"Content-Type: multipart/x-mixed-replace; boundary=boundary\r\n"
                     "\r\n", 0);
                 _write(client, "[\n", 0);   // open JSON array
-                int n = _write(client, outputbuf, outlen);
+                _write(client, outputbuf, outlen);
                 cerr << "JSON_sender: new client " << client << endl;
             }
             else // existing client, just stream pix
@@ -504,7 +504,7 @@ public:
                 }
 
                 char head[400];
-                sprintf(head, "--mjpegstream\r\nContent-Type: image/jpeg\r\nContent-Length: %zu\r\n\r\n", outlen);
+                sprintf(head, "--mjpegstream\r\nContent-Type: image/jpeg\r\nContent-Length: %zd\r\n\r\n", outlen);
                 _write(s, head, 0);
                 int n = _write(s, (char*)(&outbuf[0]), outlen);
                 cerr << "known client: " << s << ", sent = " << n << ", must be sent outlen = " << outlen << endl;

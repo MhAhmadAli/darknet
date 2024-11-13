@@ -1265,7 +1265,7 @@ socket_t create_socket(const char *host, int port, Fn fn,
   auto service = std::to_string(port);
 
   if (getaddrinfo(host, service.c_str(), &hints, &result)) {
-    return INVALID_SOCKET;
+    return M_INVALID_SOCKET;
   }
 
   for (auto rp = result; rp; rp = rp->ai_next) {
@@ -1276,7 +1276,7 @@ socket_t create_socket(const char *host, int port, Fn fn,
 #else
     auto sock = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
 #endif
-    if (sock == INVALID_SOCKET) { continue; }
+    if (sock == M_INVALID_SOCKET) { continue; }
 
 #ifndef _WIN32
     if (fcntl(sock, F_SETFD, FD_CLOEXEC) == -1) { continue; }
@@ -1301,7 +1301,7 @@ socket_t create_socket(const char *host, int port, Fn fn,
   }
 
   freeaddrinfo(result);
-  return INVALID_SOCKET;
+  return M_INVALID_SOCKET;
 }
 
 inline void set_nonblocking(socket_t sock, bool nonblocking) {
@@ -2340,7 +2340,7 @@ inline Server::Server()
       read_timeout_sec_(CPPHTTPLIB_READ_TIMEOUT_SECOND),
       read_timeout_usec_(CPPHTTPLIB_READ_TIMEOUT_USECOND),
       payload_max_length_(CPPHTTPLIB_PAYLOAD_MAX_LENGTH), is_running_(false),
-      svr_sock_(INVALID_SOCKET) {
+      svr_sock_(M_INVALID_SOCKET) {
 #ifndef _WIN32
   signal(SIGPIPE, SIG_IGN);
 #endif
@@ -2460,8 +2460,8 @@ inline bool Server::is_running() const { return is_running_; }
 
 inline void Server::stop() {
   if (is_running_) {
-    assert(svr_sock_ != INVALID_SOCKET);
-    std::atomic<socket_t> sock(svr_sock_.exchange(INVALID_SOCKET));
+    assert(svr_sock_ != M_INVALID_SOCKET);
+    std::atomic<socket_t> sock(svr_sock_.exchange(M_INVALID_SOCKET));
     detail::shutdown_socket(sock);
     detail::close_socket(sock);
   }
@@ -2732,7 +2732,7 @@ inline int Server::bind_internal(const char *host, int port, int socket_flags) {
   if (!is_valid()) { return -1; }
 
   svr_sock_ = create_server_socket(host, port, socket_flags);
-  if (svr_sock_ == INVALID_SOCKET) { return -1; }
+  if (svr_sock_ == M_INVALID_SOCKET) { return -1; }
 
   if (port == 0) {
     struct sockaddr_storage address;
@@ -2761,7 +2761,7 @@ inline bool Server::listen_internal() {
     std::unique_ptr<TaskQueue> task_queue(new_task_queue());
 
     for (;;) {
-      if (svr_sock_ == INVALID_SOCKET) {
+      if (svr_sock_ == M_INVALID_SOCKET) {
         // The server socket was closed by 'stop' method.
         break;
       }
@@ -2774,14 +2774,14 @@ inline bool Server::listen_internal() {
 
       socket_t sock = accept(svr_sock_, nullptr, nullptr);
 
-      if (sock == INVALID_SOCKET) {
+      if (sock == M_INVALID_SOCKET) {
         if (errno == EMFILE) {
           // The per-process limit of open file descriptors has been reached.
           // Try to accept new connections after a short sleep.
           std::this_thread::sleep_for(std::chrono::milliseconds(1));
           continue;
         }
-        if (svr_sock_ != INVALID_SOCKET) {
+        if (svr_sock_ != M_INVALID_SOCKET) {
           detail::close_socket(svr_sock_);
           ret = false;
         } else {
@@ -3010,7 +3010,7 @@ inline bool Client::send(const Request &req, Response &res) {
   if (req.path.empty()) { return false; }
 
   auto sock = create_client_socket();
-  if (sock == INVALID_SOCKET) { return false; }
+  if (sock == M_INVALID_SOCKET) { return false; }
 
   auto ret = process_and_close_socket(
       sock, 1, [&](Stream &strm, bool last_connection, bool &connection_close) {
@@ -3030,7 +3030,7 @@ inline bool Client::send(const std::vector<Request> &requests,
   size_t i = 0;
   while (i < requests.size()) {
     auto sock = create_client_socket();
-    if (sock == INVALID_SOCKET) { return false; }
+    if (sock == M_INVALID_SOCKET) { return false; }
 
     if (!process_and_close_socket(
             sock, requests.size() - i,
