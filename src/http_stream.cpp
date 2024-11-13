@@ -114,7 +114,7 @@ class JSON_sender
 public:
 
     JSON_sender(int port = 0, int _timeout = 400000)
-        : sock(M_INVALID_SOCKET)
+        : sock(INVALID_SOCKET)
         , timeout(_timeout)
     {
         close_all_sockets = 0;
@@ -131,9 +131,9 @@ public:
 
     bool release()
     {
-        if (sock != M_INVALID_SOCKET)
+        if (sock != INVALID_SOCKET)
             ::shutdown(sock, 2);
-        sock = (M_INVALID_SOCKET);
+        sock = (INVALID_SOCKET);
         return false;
     }
 
@@ -191,7 +191,7 @@ public:
 
     bool isOpened()
     {
-        return sock != M_INVALID_SOCKET;
+        return sock != INVALID_SOCKET;
     }
 
     bool write(char const* outputbuf)
