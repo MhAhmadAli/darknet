@@ -505,8 +505,10 @@ char *copy_string(char *s)
     if(!s) {
         return NULL;
     }
-    char* copy = (char*)xmalloc(strlen(s) + 1);
-    strncpy(copy, s, strlen(s)+1);
+    size_t len = strlen(s) + 1;
+    char* copy = (char*)xmalloc(len);
+    strncpy(copy, s, len);
+    copy[len-1] = '\0'; // Ensure null termination
     return copy;
 }
 
