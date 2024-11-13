@@ -301,7 +301,7 @@ void cudnn_convolutional_setup(layer *l, int cudnn_preference, size_t workspace_
         //printf(" CUDNN-specified %zu ", workspace_size_specify);
     }
 
-    CHECK_CUDNN(cudnnGetConvolutionForwardAlgorithm(cudnn_handle(),
+    CHECK_CUDNN(cudnnGetConvolutionForwardAlgorithm_v7(cudnn_handle(),
             l->srcTensorDesc,
             l->weightDesc,
             l->convDesc,
