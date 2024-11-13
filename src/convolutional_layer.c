@@ -288,16 +288,16 @@ void cudnn_convolutional_setup(layer *l, int cudnn_preference, size_t workspace_
     int backward_filter = CUDNN_CONVOLUTION_BWD_FILTER_ALGO_3;
     if (cudnn_preference == cudnn_smallest)
     {
-        forward_algo = CUDNN_CONVOLUTION_FWD_NO_WORKSPACE;
-        backward_algo = CUDNN_CONVOLUTION_BWD_DATA_NO_WORKSPACE;
-        backward_filter = CUDNN_CONVOLUTION_BWD_FILTER_NO_WORKSPACE;
+        forward_algo = CUDNN_CONVOLUTION_FWD_ALGO_IMPLICIT_GEMM;
+        backward_algo = CUDNN_CONVOLUTION_BWD_DATA_ALGO_WINOGRAD;
+        backward_filter = CUDNN_CONVOLUTION_BWD_FILTER_ALGO_3;
         printf(" CUDNN-slow ");
     }
     if (cudnn_preference == cudnn_specify)
     {
-        forward_algo = CUDNN_CONVOLUTION_FWD_SPECIFY_WORKSPACE_LIMIT;
-        backward_algo = CUDNN_CONVOLUTION_BWD_DATA_SPECIFY_WORKSPACE_LIMIT;
-        backward_filter = CUDNN_CONVOLUTION_BWD_FILTER_SPECIFY_WORKSPACE_LIMIT;
+        forward_algo = CUDNN_CONVOLUTION_FWD_ALGO_IMPLICIT_GEMM;
+        backward_algo = CUDNN_CONVOLUTION_BWD_DATA_ALGO_WINOGRAD;
+        backward_filter = CUDNN_CONVOLUTION_BWD_FILTER_ALGO_3;
         //printf(" CUDNN-specified %zu ", workspace_size_specify);
     }
 
