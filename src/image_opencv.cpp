@@ -911,9 +911,9 @@ extern "C" void draw_detections_cv_v3(mat_cv* mat, detection *dets, int num, flo
 
                 //width = prob*20+2;
 
-                rgb[0] = red;
-                rgb[1] = green;
-                rgb[2] = blue;
+                // rgb[0] = red;
+                // rgb[1] = green;
+                // rgb[2] = blue;
                 box b = dets[i].bbox;
                 if (std::isnan(b.w) || std::isinf(b.w)) b.w = 0.5;
                 if (std::isnan(b.h) || std::isinf(b.h)) b.h = 0.5;

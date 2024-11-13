@@ -126,7 +126,7 @@ using socket_t = SOCKET;
 #include <unistd.h>
 
 using socket_t = int;
-#define INVALID_SOCKET (-1)
+#define M_INVALID_SOCKET (-1)
 #endif //_WIN32
 
 #include <array>
@@ -1248,7 +1248,7 @@ socket_t create_socket(const char *host, int port, Fn fn,
 #define SO_OPENTYPE 0x7008
 
   int opt = SO_SYNCHRONOUS_NONALERT;
-  setsockopt(INVALID_SOCKET, SOL_SOCKET, SO_OPENTYPE, (char *)&opt,
+  setsockopt(M_INVALID_SOCKET, SOL_SOCKET, SO_OPENTYPE, (char *)&opt,
              sizeof(opt));
 #endif
 
